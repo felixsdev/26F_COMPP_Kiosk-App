@@ -1,51 +1,54 @@
-# IMPORTS
-from flask import Flask, render_template, request, jsonify
-from dotenv import load_dotenv
+# Flask app for handling DI Kiosk chat requests to LiteLLM.
+# Loads system context from local JSON files and communicates with ai.
+
+#===================
+# IMPORT & SETUP
+
+import flask
+import dotenv
 import litellm
 import json
 
-# SETUP
-load_dotenv()
-app = Flask(__name__)
+dotenv.load_dotenv()
+app = flask.Flask(__name__)
 
-# UTILITY FUNCTION TO LOAD CONTEXT .JSON
-def load_json(filename):
-    with open(filename, "r") as f:
-        return json.load(f)
-
+#===================
 # HOMEPAGE ROUTE
-@app.route("/")
-# HOMEPAGE FUNCTION
-def index():
-    return render_template("index.html")
 
+@app.route("/")
+def index():
+    return flask.render_template("index.html")
+
+#===================
 # CHAT ROUTE
+
 @app.route("/chat", methods=["POST"])
-# CHAT FUNCTION
 def chat():
-    # GET CONTEXT
-    user_message = request.json.get("message")
-    session = load_json("data/session.json")
-    context = load_json("data/context.json")
-    conversation_history = load_json("data/history.json")
-    # PROMPT
+
+     # Get user msg
+    user_message = flask.request.json.get("message")
+
     try:
-        # 1. BUILD THE PROMPT
+
+        # Combine system context
+        with open("data/session.json", "r") as f:
+            session = json.load(f)
+        with open("data/context.json", "r") as f:
+            context = json.load(f)
+        with open("data/history.json", "r") as f:
+            conversation_history = json.load(f)
+        system_data = {
+            "instructions": "You are a helpful assistant.",
+            "session": session,
+            "context": context,
+            "history": conversation_history
+        }
+
+        # Create payload
         messages_payload = [
             {
                 "role": "system",
-                "content": f"""
-                You are a helpful assistant.
-
-                Current session context:
-                {json.dumps(session)}
-
-                Current context:
-                {json.dumps(context)}
-
-                Conversation history:
-                {json.dumps(conversation_history)}
-                """
+                "content": json.dumps(system_data, separators=(',', ':'))
             },
             {
                 "role": "user",
@@ -53,32 +56,33 @@ def chat():
             }
         ]
 
-        # 2. PRINT IT TO THE TERMINAL (Your Python "Console Log")
+        # Print for debugging
         print("\n" + "="*40)
-        print(json.dumps(messages_payload, indent=2))
+        print("USER MESSAGE:")
+        print("-"*40)
+        print(json.dumps(user_message))
+        print("="*40)
+        print("SYSTEM CONTEXT")
+        print("-"*40)
+        print(json.dumps(system_data, indent=4))
         print("="*40 + "\n")
 
-        # 3. SEND IT TO LITELLM
+        # Call llm & get reply
         response = litellm.completion(
             model="gemini/gemini-2.5-flash",
             messages=messages_payload
         )
-        
-        # GET REPLY
         reply = response.choices[0].message.content
-        return jsonify({"reply": reply})
+        return flask.jsonify({"reply": reply})
     
-    # BUSY ERROR HANDLING
+    # Error handling
     except litellm.exceptions.ServiceUnavailableError:
-        busy_message = "High demand. Unavailable. Try again in a moment."
-        return jsonify({"reply": busy_message})
-        
-    # CATCH ALL ERRORS
+        return flask.jsonify({"reply": "High demand. Unavailable. Try again in a moment."})
     except Exception as e:
-        error_message = "Unexpected error. Try again."
         print(f"Server Error: {e}")
-        return jsonify({"reply": error_message})
+        return flask.jsonify({"reply": "Unexpected error. Try again."})
 
-# STARTING FLASK WEBSERVER
+# STARING WEBSERVER
+#===================
 if __name__ == "__main__":
     app.run(debug=True)
