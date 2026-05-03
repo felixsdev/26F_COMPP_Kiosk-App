@@ -61,8 +61,9 @@ def reset():
 @app.route("/chat", methods=["POST"])
 def chat():
 
-     # Get user msg
+     # Get user msg & selected personality
     user_message = flask.request.json.get("message")
+    personality = flask.request.json.get("personality")
 
     try:
 
@@ -76,7 +77,7 @@ def chat():
         with open("data/products.json", "r") as f:
             products = json.load(f)
         system_data = {
-            "instructions": "You are a kiosk app, helping people choose what to buy.",
+            "instructions": f"You are a kiosk app, helping people choose what to buy. Your personality: {personality}.",
             "session chat": session,
             "context": context,
             "sessions history": history,

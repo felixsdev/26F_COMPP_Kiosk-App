@@ -9,6 +9,9 @@ async function sendMessage() {
     input.value = "";
     if (!message) return; // Return if empty
 
+    // Get the selected personality
+    const personality = document.getElementById("personality-select").value;
+
     // Append the message to the chat
     appendMessage("You", message, "user");
 
@@ -16,7 +19,7 @@ async function sendMessage() {
     const response = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ message: message, personality: personality })
     });
 
     // Get response & append it

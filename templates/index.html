@@ -9,8 +9,14 @@
     <div id="input-area">
         <input type="text" id="user-input" placeholder="Type a message..." />
         <button onclick="sendMessage()">Send</button>
-        <button onclick="resetSession()">Reset Session</button>
     </div>
+    <button onclick="resetSession()">Reset Session</button>
+    <select id="personality-select">
+        <option value="helpful, polite and professional Salesman">Standard Professional</option>
+        <option value="a grumpy, sarcastic old man who complains about modern technology">Grumpy Old Man</option>
+        <option value="an overly enthusiastic surfer dude who uses lots of slang">Surfer Dude</option>
+        <option value="speaking strictly in medieval Shakespearean English">Shakespearean</option>
+    </select>
 
     <script src="/static/script.js"></script>
 </body>
