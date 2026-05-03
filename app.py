@@ -8,9 +8,32 @@ import flask
 import dotenv
 import litellm
 import json
+import threading
+import time
+from datetime import datetime
 
 dotenv.load_dotenv()
 app = flask.Flask(__name__)
+
+#===================
+# CONTEXT.JSON UPDATER
+
+def update_context_loop():
+    while True:
+        try:
+            now = datetime.now()
+            context_data = {
+                "time": now.strftime("%H:%M"),
+                "day": now.strftime("%A"),
+                "weather": "sunny, 22C" # Replace with real API later
+            }
+            with open("data/context.json", "w") as f:
+                json.dump(context_data, f, indent=4)
+            print("updated: context.json")
+        except Exception as e:
+            print(f"error: context.json {e}")
+            
+        time.sleep(60)
 
 #===================
 # HOMEPAGE ROUTE
@@ -104,7 +127,10 @@ def chat():
         print(f"Server Error: {e}")
         return flask.jsonify({"reply": "Unexpected error. Try again."})
 
-# STARING WEBSERVER
+# STARING UPDATER & WEBSERVER
 #===================
 if __name__ == "__main__":
+    updater_thread = threading.Thread(target=update_context_loop, daemon=True)
+    updater_thread.start()
+
     app.run(debug=True)
