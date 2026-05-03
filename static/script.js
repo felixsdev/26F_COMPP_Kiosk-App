@@ -39,6 +39,7 @@ function appendMessage(senderName, message, cssClass) {
 RESET SESSION
 ==================== */
 
+document.addEventListener("DOMContentLoaded", resetSession);
 async function resetSession() {
     try {
         // Call the backend reset route

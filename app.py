@@ -72,12 +72,15 @@ def chat():
         with open("data/context.json", "r") as f:
             context = json.load(f)
         with open("data/history.json", "r") as f:
-            conversation_history = json.load(f)
+            history = json.load(f)
+        with open("data/products.json", "r") as f:
+            products = json.load(f)
         system_data = {
-            "instructions": "You are a helpful assistant.",
+            "instructions": "You are a kiosk app, helping people choose what to buy.",
             "session chat": session,
             "context": context,
-            "old sessions": conversation_history
+            "sessions history": history,
+            "available products": products
         }
 
         # Create payload
