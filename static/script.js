@@ -1,5 +1,5 @@
 /* ====================
-CHAT FUNCTION (onclick send button)
+CHAT (onclick send button)
 ==================== */
 async function sendMessage() {
 
@@ -25,7 +25,7 @@ async function sendMessage() {
 }
 
 /* ====================
-APPEND TO CHAT HISTORY FUNCTION
+APPEND TO CHAT HISTORY
 ==================== */
 function appendMessage(senderName, message, cssClass) {
     const box = document.getElementById("chat-box");
@@ -33,4 +33,32 @@ function appendMessage(senderName, message, cssClass) {
     div.className = `msg msg-${cssClass}`;
     div.innerHTML = `<strong>${senderName}:</strong> ${message}`;
     box.appendChild(div);
+}
+
+/* ====================
+RESET SESSION
+==================== */
+
+async function resetSession() {
+    try {
+        // Call the backend reset route
+        const response = await fetch('/reset', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.status === "success") {
+            // Clear the chat box UI
+            document.getElementById("chat-box").innerHTML = "";
+            console.log("Session cleared successfully.");
+        } else {
+            console.error("Failed to clear session.");
+        }
+    } catch (error) {
+        console.error("Error connecting to reset route:", error);
+    }
 }

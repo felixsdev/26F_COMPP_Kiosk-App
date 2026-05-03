@@ -20,6 +20,19 @@ def index():
     return flask.render_template("index.html")
 
 #===================
+# RESET SESSION ROUTE
+
+@app.route("/reset", methods=["POST"])
+def reset():
+    try:
+        with open("data/session.json", "w") as f:
+            json.dump([], f)
+        return flask.jsonify({"status": "success", "message": "Session reset."})
+    except Exception as e:
+        print(f"Error resetting session: {e}")
+        return flask.jsonify({"status": "error", "message": "Failed to reset session."}), 500
+
+#===================
 # CHAT ROUTE
 
 @app.route("/chat", methods=["POST"])
@@ -39,9 +52,9 @@ def chat():
             conversation_history = json.load(f)
         system_data = {
             "instructions": "You are a helpful assistant.",
-            "session": session,
+            "session chat": session,
             "context": context,
-            "history": conversation_history
+            "old sessions": conversation_history
         }
 
         # Create payload
@@ -73,6 +86,15 @@ def chat():
             messages=messages_payload
         )
         reply = response.choices[0].message.content
+
+        # Append both messages to the session list we loaded earlier
+        session.append({"speaker": "user", "text": user_message})
+        session.append({"speaker": "assistant", "text": reply})
+
+        # Save the updated session back to the JSON file
+        with open("data/session.json", "w") as f:
+            json.dump(session, f, indent=4)
+
         return flask.jsonify({"reply": reply})
     
     # Error handling
