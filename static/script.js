@@ -1,30 +1,85 @@
 /* ====================
-CHAT (onclick send button)
+SEND MESSAGE (triggered by button clicks or init)
 ==================== */
-async function sendMessage() {
+async function sendMessage(text, isInitial = false) {
 
-    // Get & format text input
-    const input = document.getElementById("user-input");
-    const message = input.value.trim();
-    input.value = "";
-    if (!message) return; // Return if empty
+    // Clear the options area so the user can't double-click
+    document.getElementById("options-area").innerHTML = "";
 
-    // Get the selected personality
+    // Get the personality
     const personality = document.getElementById("personality-select").value;
 
-    // Append the message to the chat
-    appendMessage("You", message, "user");
+    // Append the user's selected option to the chat (unless it's the hidden init trigger)
+    if (!isInitial) {
+        appendMessage("You", text, "user");
+    }
 
-    // Request on /chat 
-    const response = await fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message, personality: personality })
+    try {
+        const response = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                message: text, 
+                personality: personality,
+                is_initial: isInitial
+            })
+        });
+
+        // Get the response
+        const data = await response.json();
+        
+        // Check if result or question
+        if (data.product_id !== null && data.product_name !== null) {
+            appendMessage("AI", `Perfect! Based on your answers, i recommend: <strong>${data.product_name}</strong>`, "ai");
+        } else {
+            appendMessage("AI", data.message, "ai");
+            renderOptions(data.options);
+        }
+    } catch (error) {
+        console.error("Chat error:", error);
+    }
+}
+
+/* ====================
+RESET SESSION & INITIALIZE
+==================== */
+document.addEventListener("DOMContentLoaded", resetSession);
+
+async function resetSession() {
+    try {
+        const response = await fetch('/reset', {
+            method: 'POST',
+        });
+
+        const data = await response.json();
+
+        // Trigger the AI to speak first
+        if (data.status === "success") {
+            document.getElementById("chat-box").innerHTML = "";
+            const initPrompt = "The user just walked up to the kiosk. Ask the first lifestyle question.";
+            sendMessage(initPrompt, true);
+        }
+    } catch (error) {
+        console.error("Error connecting to reset route:", error);
+    }
+}
+
+/* ====================
+RENDER DYNAMIC BUTTONS
+==================== */
+function renderOptions(optionsArray) {
+    const optionsArea = document.getElementById("options-area");
+    optionsArea.innerHTML = "";
+
+    if (!optionsArray || optionsArray.length === 0) return;
+
+    optionsArray.forEach(optText => {
+        const btn = document.createElement("button");
+        btn.innerText = optText;
+        btn.className = "option-btn";
+        btn.onclick = () => sendMessage(optText, false);
+        optionsArea.appendChild(btn);
     });
-
-    // Get response & append it
-    const data = await response.json();
-    appendMessage("AI", data.reply, "ai");
 }
 
 /* ====================
@@ -36,33 +91,4 @@ function appendMessage(senderName, message, cssClass) {
     div.className = `msg msg-${cssClass}`;
     div.innerHTML = `<strong>${senderName}:</strong> ${message}`;
     box.appendChild(div);
-}
-
-/* ====================
-RESET SESSION
-==================== */
-
-document.addEventListener("DOMContentLoaded", resetSession);
-async function resetSession() {
-    try {
-        // Call the backend reset route
-        const response = await fetch('/reset', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-
-        if (data.status === "success") {
-            // Clear the chat box UI
-            document.getElementById("chat-box").innerHTML = "";
-            console.log("Session cleared successfully.");
-        } else {
-            console.error("Failed to clear session.");
-        }
-    } catch (error) {
-        console.error("Error connecting to reset route:", error);
-    }
 }

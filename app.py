@@ -10,7 +10,7 @@ import litellm
 import json
 import threading
 import time
-from datetime import datetime
+import datetime
 
 dotenv.load_dotenv()
 app = flask.Flask(__name__)
@@ -21,7 +21,7 @@ app = flask.Flask(__name__)
 def update_context_loop():
     while True:
         try:
-            now = datetime.now()
+            now = datetime.datetime.now()
             context_data = {
                 "time": now.strftime("%H:%M"),
                 "day": now.strftime("%A"),
@@ -50,10 +50,10 @@ def reset():
     try:
         with open("data/session.json", "w") as f:
             json.dump([], f)
-        return flask.jsonify({"status": "success", "message": "Session reset."})
+        return flask.jsonify({"status": "success"})
     except Exception as e:
         print(f"Error resetting session: {e}")
-        return flask.jsonify({"status": "error", "message": "Failed to reset session."}), 500
+        return flask.jsonify({"status": "error"}), 500
 
 #===================
 # CHAT ROUTE
@@ -64,6 +64,7 @@ def chat():
      # Get user msg & selected personality
     user_message = flask.request.json.get("message")
     personality = flask.request.json.get("personality")
+    is_initial = flask.request.json.get("is_initial", False)
 
     try:
 
@@ -76,8 +77,32 @@ def chat():
             history = json.load(f)
         with open("data/products.json", "r") as f:
             products = json.load(f)
+        system_instructions = f"""You are a smart, efficient kiosk assistant helping people choose a product. Your personality: {personality}.
+
+        YOUR MISSION:
+        Find the perfect product for the user by asking EXACTLY 3 sequential, creative lifestyle questions. After the 3rd question, you must stop asking questions and only output the final product.
+
+        STRICT RULES:
+        1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?". Jump immediately into the first question.
+        2. CREATIVE QUESTIONS: Ask quirky/lifestyle questions (e.g., "How long did you sleep?", "What is your energy level?").
+        3. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
+        4. TRACK PROGRESSION & MODES: Count the user's previous answers in the "session chat" to know your current step.
+           - Step 1 (0 answers): Ask Question 1.
+           - Step 2 (1 answer): Ask Question 2.
+           - Step 3 (2 answers): Ask Question 3.
+           - Step 4 (3 answers - RESULT MODE): The questions are done. Provide ONLY the product_name and product_id based on their answers. Do not include a message or any options.
+
+        CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
+        Your JSON must exactly match this schema:
+        {{
+            "message": "Your short question (leave as empty string \"\" if in Result Mode)",
+            "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
+            "product_name": "The final product name (leave as null if in Steps 1-3)",
+            "product_id": "The final product ID (leave as null if in Steps 1-3)"
+        }}
+        """
         system_data = {
-            "instructions": f"You are a kiosk app, helping people choose what to buy. Your personality: {personality}.",
+            "instructions": system_instructions,
             "session chat": session,
             "context": context,
             "sessions history": history,
@@ -96,6 +121,7 @@ def chat():
             }
         ]
 
+        '''
         # Print for debugging
         print("\n" + "="*40)
         print("USER MESSAGE:")
@@ -106,30 +132,32 @@ def chat():
         print("-"*40)
         print(json.dumps(system_data, indent=4))
         print("="*40 + "\n")
+        '''
 
         # Call llm & get reply
         response = litellm.completion(
             model="gemini/gemini-2.5-flash",
-            messages=messages_payload
+            messages=messages_payload,
+            response_format={ "type": "json_object" }
         )
         reply = response.choices[0].message.content
-
-        # Append both messages to the session list we loaded earlier
+        reply_json = json.loads(reply)
+            
         session.append({"speaker": "user", "text": user_message})
-        session.append({"speaker": "assistant", "text": reply})
+        session.append({"speaker": "assistant", "text": reply_json.get("message")})
 
-        # Save the updated session back to the JSON file
         with open("data/session.json", "w") as f:
             json.dump(session, f, indent=4)
 
-        return flask.jsonify({"reply": reply})
+        # Send the parsed JSON back to the frontend
+        return flask.jsonify(reply_json)
     
     # Error handling
-    except litellm.exceptions.ServiceUnavailableError:
-        return flask.jsonify({"reply": "High demand. Unavailable. Try again in a moment."})
     except Exception as e:
-        print(f"Server Error: {e}")
-        return flask.jsonify({"reply": "Unexpected error. Try again."})
+        print(f"Error: {e}")
+        return flask.jsonify({
+            "message": "I'm having a little trouble connecting right now. Let's try that again."
+        })
 
 # STARING UPDATER & WEBSERVER
 #===================
