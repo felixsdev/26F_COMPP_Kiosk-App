@@ -11,7 +11,6 @@ import json
 import threading
 import time
 import datetime
-import replicate
 
 dotenv.load_dotenv()
 app = flask.Flask(__name__)
@@ -26,14 +25,13 @@ def update_context_loop():
             context_data = {
                 "time": now.strftime("%H:%M"),
                 "day": now.strftime("%A"),
-                "weather": "sunny, 22C" # Replace with real API later
+                "weather": "sunny, 22C" # replace with api or something
             }
             with open("data/context.json", "w") as f:
                 json.dump(context_data, f, indent=4)
-            print("updated: context.json")
+            print("updated context.json")
         except Exception as e:
-            print(f"error: context.json {e}")
-            
+            print(f"failed updating context.json {e}")
         time.sleep(60)
 
 #===================
@@ -51,10 +49,11 @@ def reset():
     try:
         with open("data/session.json", "w") as f:
             json.dump([], f)
+        print(f"resetted session")
         return flask.jsonify({"status": "success"})
     except Exception as e:
-        print(f"Error resetting session: {e}")
-        return flask.jsonify({"status": "error"}), 500
+        print(f"failed resetting session: {e}")
+        return flask.jsonify({"status": "error"})
 
 #===================
 # CHAT ROUTE
@@ -62,14 +61,12 @@ def reset():
 @app.route("/chat", methods=["POST"])
 def chat():
 
-     # Get user msg & selected personality
+     # get message & personality
     user_message = flask.request.json.get("message")
     personality = flask.request.json.get("personality")
-    is_initial = flask.request.json.get("is_initial", False)
 
     try:
-
-        # Combine system context
+        # prepare context
         with open("data/session.json", "r") as f:
             session = json.load(f)
         with open("data/context.json", "r") as f:
@@ -78,30 +75,51 @@ def chat():
             history = json.load(f)
         with open("data/products.json", "r") as f:
             products = json.load(f)
-        system_instructions = f"""You are a smart, efficient kiosk assistant helping people choose a product. Your personality: {personality}.
 
-        YOUR MISSION:
-        Find the perfect product for the user by asking EXACTLY 3 sequential, creative lifestyle questions. After the 3rd question, you must stop asking questions and only output the final product.
+        # add user message to session.json
+        session.append({"speaker": "user", "text": user_message})
+
+        # calculate current step from session
+        user_answers_count = sum(1 for msg in session if msg.get("speaker") == "user")
+
+        # instructions based on current step
+        if user_answers_count == 1:
+            step_instructions = """STEP 1: The user just clicked start. Ask the FIRST quirky/lifestyle question. 
+            Provide exactly 3 short options. Leave product fields as null."""
+        
+        elif user_answers_count == 2:
+            step_instructions = """STEP 2: Ask the SECOND quirky/lifestyle question based on their previous answer. 
+            Provide exactly 3 short options. Leave product fields as null."""
+        
+        elif user_answers_count == 3:
+            step_instructions = """STEP 3: Ask the THIRD and final quirky/lifestyle question. 
+            Provide exactly 3 short options. Leave product fields as null."""
+        
+        else:
+            step_instructions = """STEP 4 (RESULT MODE): The questions are done! 
+            Provide ONLY the product_name and product_id from the available products list based on their answers. 
+            Set "message" to an empty string "" and "options" to an empty array []."""
+
+        # build the prompt
+        system_instructions = f"""
+        You are a smart, efficient kiosk assistant helping people choose a product. 
+        YOUR PERSONALITY: {personality}.
+        YOUR MISSION: {step_instructions}
 
         STRICT RULES:
-        1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?". Jump immediately into the first question.
-        2. CREATIVE QUESTIONS: Ask quirky/lifestyle questions (e.g., "How long did you sleep?", "What is your energy level?").
-        3. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
-        4. TRACK PROGRESSION & MODES: Count the user's previous answers in the "session chat" to know your current step.
-           - Step 1 (0 answers): Ask Question 1.
-           - Step 2 (1 answer): Ask Question 2.
-           - Step 3 (2 answers): Ask Question 3.
-           - Step 4 (3 answers - RESULT MODE): The questions are done. Provide ONLY the product_name and product_id based on their answers. Do not include a message or any options.
+        1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
+        2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
 
         CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
         Your JSON must exactly match this schema:
         {{
-            "message": "Your short question (leave as empty string \"\" if in Result Mode)",
+            "message": "Your short question",
             "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
             "product_name": "The final product name (leave as null if in Steps 1-3)",
             "product_id": "The final product ID (leave as null if in Steps 1-3)"
         }}
         """
+        
         system_data = {
             "instructions": system_instructions,
             "session chat": session,
@@ -110,7 +128,7 @@ def chat():
             "available products": products
         }
 
-        # Create payload
+        # create payload
         messages_payload = [
             {
                 "role": "system",
@@ -122,59 +140,46 @@ def chat():
             }
         ]
 
-        '''
-        # Print for debugging
-        print("\n" + "="*40)
-        print("USER MESSAGE:")
-        print("-"*40)
-        print(json.dumps(user_message))
-        print("="*40)
-        print("SYSTEM CONTEXT")
-        print("-"*40)
-        print(json.dumps(system_data, indent=4))
-        print("="*40 + "\n")
-        '''
-
-        # Call llm & get reply
+        # call llm & get reply
         response = litellm.completion(
-            # Route through Replicate to their hosted Gemini model
             model="replicate/google/gemini-2.5-flash", 
             messages=messages_payload,
-            # Gemini on Replicate should still support JSON mode
         )
         reply = response.choices[0].message.content
         
-        # Clean up potential markdown formatting
+        # clean up potential markdown formatting
         reply = reply.strip()
         if reply.startswith("```json"):
             reply = reply[7:]
-        if reply.startswith("```"): # Sometimes it just uses ```
+        if reply.startswith("```"):
             reply = reply[3:]
         if reply.endswith("```"):
             reply = reply[:-3]
         reply = reply.strip()
-        
-        # Now it is safe to parse
         reply_json = json.loads(reply)
             
-        session.append({"speaker": "user", "text": user_message})
+        # add reply to session.json
         session.append({"speaker": "assistant", "text": reply_json.get("message")})
 
         with open("data/session.json", "w") as f:
             json.dump(session, f, indent=4)
 
-        # Send the parsed JSON back to the frontend
+        # back to frontend
         return flask.jsonify(reply_json)
     
-    # Error handling
+    # error handling
     except Exception as e:
         print(f"Error: {e}")
         return flask.jsonify({
-            "message": "I'm having a little trouble connecting right now. Let's try that again."
+            "message": "I'm having a little trouble connecting right now. Let's try that again.",
+            "options": ["Retry"],
+            "product_name": None,
+            "product_id": None
         })
 
 # STARING UPDATER & WEBSERVER
 #===================
+
 if __name__ == "__main__":
     updater_thread = threading.Thread(target=update_context_loop, daemon=True)
     updater_thread.start()
