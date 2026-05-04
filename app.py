@@ -11,6 +11,7 @@ import json
 import threading
 import time
 import datetime
+import replicate
 
 dotenv.load_dotenv()
 app = flask.Flask(__name__)
@@ -136,11 +137,24 @@ def chat():
 
         # Call llm & get reply
         response = litellm.completion(
-            model="gemini/gemini-2.5-flash",
+            # Route through Replicate to their hosted Gemini model
+            model="replicate/google/gemini-2.5-flash", 
             messages=messages_payload,
-            response_format={ "type": "json_object" }
+            # Gemini on Replicate should still support JSON mode
         )
         reply = response.choices[0].message.content
+        
+        # Clean up potential markdown formatting
+        reply = reply.strip()
+        if reply.startswith("```json"):
+            reply = reply[7:]
+        if reply.startswith("```"): # Sometimes it just uses ```
+            reply = reply[3:]
+        if reply.endswith("```"):
+            reply = reply[:-3]
+        reply = reply.strip()
+        
+        # Now it is safe to parse
         reply_json = json.loads(reply)
             
         session.append({"speaker": "user", "text": user_message})
