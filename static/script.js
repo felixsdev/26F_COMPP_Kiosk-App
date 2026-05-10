@@ -24,6 +24,10 @@ async function sendMessage(text) {
         const data = await response.json();
         if (data.product_id && data.product_name) {
             appendMessage("AI", `Perfect! Based on your answers, I recommend: <strong>${data.product_name}</strong>`, "ai");
+            const optionsArea = document.getElementById("options-area");
+            optionsArea.innerHTML = `
+                <button class="option-btn" onclick="window.location.href='/checkout.html?item_id=${data.product_id}'">Checkout</button>
+            `;
         } else {
             appendMessage("AI", data.message, "ai");
             renderOptions(data.options);
