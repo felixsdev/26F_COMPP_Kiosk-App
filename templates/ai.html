@@ -6,13 +6,21 @@
     <title>AI | DI KIOSK</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="page_ai">
-    <header>
-        <h1>AI Helper</h1>
-        <a class="back-button" href="index.html">Back</a>
+<body class="page-ai">
+    <header class="header">
+        <a class="header__left" href="javascript:history.back()">
+            <img class="header__icon" src="/static/assets/arrow_left_alt_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">
+        </a>
+        <a class="header__middle" href="index.html">
+            <img class="header__logo" src="/static/assets/title.svg">
+        </a>
+        <button class="header__right header__button" onclick="resetSession()">
+            <img class="header__icon" src="/static/assets/autorenew_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">
+        </button>
     </header>
+
     <main>
-        <div class="personality-bar">
+        <div class="ai-controls">
             <label for="ai-persona">Personality:</label>
             <select id="ai-persona">
                 <option value="helpful, polite and professional Salesman">Standard Professional</option>
@@ -22,16 +30,12 @@
             </select>
         </div>
 
-        <div id="chat-box"></div>
-        <div id="options-area"></div>
-        
-        <hr>
-        
-        <button onclick="resetSession()">Reset Session</button>
+        <div id="chat-box" class="chat-container"></div>
+        <div id="options-area" class="chat-options"></div>
 
     </main>
 
-    <footer>
+    <footer class="footer">
         <p>Made for FS26.COMPP</p>
     </footer>
 

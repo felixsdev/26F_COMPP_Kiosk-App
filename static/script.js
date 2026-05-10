@@ -26,7 +26,7 @@ async function sendMessage(text) {
             appendMessage("AI", `Perfect! Based on your answers, I recommend: <strong>${data.product_name}</strong>`, "ai");
             const optionsArea = document.getElementById("options-area");
             optionsArea.innerHTML = `
-                <button class="option-btn" onclick="window.location.href='/checkout.html?item_id=${data.product_id}'">Checkout</button>
+                <button class="chat-option-btn" onclick="window.location.href='/checkout.html?item_id=${data.product_id}'">Checkout</button>
             `;
         } else {
             appendMessage("AI", data.message, "ai");
@@ -51,7 +51,7 @@ async function resetSession() {
         if (data.status === "success") {
             document.getElementById("chat-box").innerHTML = "";
             document.getElementById("options-area").innerHTML = `
-                <button class="option-btn start-btn" onclick="sendMessage('Start')">Start Session</button>
+                <button class="chat-option-btn" onclick="sendMessage('Start')">Start Session</button>
             `;
         }
     } catch (error) {
@@ -69,7 +69,7 @@ function renderOptions(optionsArray) {
     optionsArray.forEach(optText => {
         const btn = document.createElement("button");
         btn.innerText = optText;
-        btn.className = "option-btn";
+        btn.className = "chat-option-btn";
         btn.onclick = () => sendMessage(optText);
         optionsArea.appendChild(btn);
     });
@@ -81,7 +81,8 @@ function renderOptions(optionsArray) {
 function appendMessage(senderName, message, cssClass) {
     const box = document.getElementById("chat-box");
     const div = document.createElement("div");
-    div.className = `msg msg-${cssClass}`;
+    div.className = `chat-message chat-message--${cssClass}`;
     div.innerHTML = `<strong>${senderName}:</strong> ${message}`;
     box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
 }

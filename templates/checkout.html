@@ -6,30 +6,36 @@
     <title>Checkout | DI Kiosk</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="page_checkout">
-    <header>
-        <h1>Checkout</h1>
-        <a class="back-button" href="/products.html">Back</a>
+<body class="page-checkout">
+    <header class="header">
+        <a class="header__left" href="javascript:history.back()">
+            <img class="header__icon" src="/static/assets/arrow_left_alt_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">
+        </a>
+        <a class="header__middle" href="index.html">
+            <img class="header__logo" src="/static/assets/title.svg">
+        </a>
+        <div class="header__right">
+        </div>
     </header>
 
     <main>
         <div class="checkout-card">
-            <div class="checkout-details">
-                <img class="product-img" src="/static/assets/img/img_{{ product.id }}.jpg" alt="{{ product.name }}">
+            <div class="checkout-card__details">
+                <img class="checkout-card__product-img" src="/static/assets/img/img_{{ product.id }}.png" alt="{{ product.name }}">
                 <div>
-                    <p class="title">{{ product.name }}</p>
-                    <p class="price">CHF {{ product.price }}</p>
+                    <p class="checkout-card__name">{{ product.name }}</p>
+                    <p class="checkout-card__price">CHF {{ product.price }}</p>
                 </div>
             </div>
             
-            <img class="twint-logo" src="/static/assets/twint.png" alt="Twint Logo">
+            <img class="checkout-card__vendor-logo" src="/static/assets/twint.png" alt="Twint Logo">
             
-            <img class="product-qrcode" src="/static/assets/qr/qr_{{ product.id }}.png" alt="Twint QR Code for {{ product.name }}">
+            <img class="checkout-card__qrcode" src="/static/assets/qr/qr_{{ product.id }}.png" alt="Twint QR Code for {{ product.name }}">
             
         </div>
     </main>
 
-    <footer>
+    <footer class="footer">
         <p>Made for FS26.COMPP</p>
     </footer>
 </body>

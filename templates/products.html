@@ -6,25 +6,31 @@
     <title>Products | DI Kiosk</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="page_products">
-    <header>
-        <h1>Choose a product</h1>
-        <a class="back-button" href="index.html">Back</a>
+<body class="page-products">
+    <header class="header">
+        <a class="header__left" href="javascript:history.back()">
+            <img class="header__icon" src="/static/assets/arrow_left_alt_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">
+        </a>
+        <a class="header__middle" href="index.html">
+            <img class="header__logo" src="/static/assets/title.svg">
+        </a>
+        <div class="header__right">
+        </div>
     </header>
 
     <main>
         {% for item in products %}
         
-        <a class="product_item" href="/checkout.html?item_id={{ item.id }}">
-            <img src="/static/assets/img/img_{{ item.id }}.jpg" alt="{{ item.name }}">
-            <p class="title">{{ item.name }}</p>
-            <p class="price">CHF {{ item.price }}</p>
+        <a class="product-card" href="/checkout.html?item_id={{ item.id }}">
+            <img class="product-card__image" src="/static/assets/img/img_{{ item.id }}.png" alt="{{ item.name }}">
+            <p class="product-card__name">{{ item.name }}</p>
+            <p class="product-card__price">CHF {{ item.price }}</p>
         </a>
         
         {% endfor %}
     </main>
 
-    <footer>
+    <footer class="footer">
         <p>Made for FS26.COMPP</p>
     </footer>
 </body>

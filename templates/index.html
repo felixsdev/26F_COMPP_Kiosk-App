@@ -6,23 +6,29 @@
     <title>Home | DI Kiosk</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="page_index">
-    <header>
-        <h1>DI Kiosk</h1>
+<body class="page-index">
+    <header class="header">
+        <div class="header__left">
+        </div>
+        <a class="header__middle" href="index.html">
+            <img class="header__logo" src="/static/assets/title.svg">
+        </a>
+        <div class="header__right">
+        </div>
     </header>
 
     <main>
-        <a href="products.html">
-            <p class="title">To Products</p>
-            <p class="sub">Browse the menu directly</p>
+        <a href="products.html" class="nav-card">
+            <p class="nav-card__title">View all products</p>
+            <p class="nav-card__sub">Choose yourself and pay directly.</p>
         </a>
-        <a href="ai.html">
-            <p class="title">AI Helper</p>
-            <p class="sub">Answer a few questions and<br>let the kiosk decide for you</p>
+        <a href="ai.html" class="nav-card nav-card--primary">
+            <p class="nav-card__title">AI Helper</p>
+            <p class="nav-card__sub">Answer a few questions and<br>let the kiosk decide for you.</p>
         </a>
     </main>
 
-    <footer>
+    <footer class="footer">
         <p>Made for FS26.COMPP</p>
     </footer>
 </body>
