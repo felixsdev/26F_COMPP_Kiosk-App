@@ -1,0 +1,387 @@
+/* ====================
+General styles & font import
+==================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ====================
+Variables
+==================== */
+
+:root {
+    --bg-color: #f4f5f7;
+    --card-color: #ffffff;
+
+    --text-main: #111827;
+    --text-muted: color-mix(in srgb, var(--text-main), white 40%);
+
+    --accent-main: #2563eb;
+    --accent-muted: color-mix(in srgb, var(--accent-main), white 80%);
+
+    --red-main: #ef4444;
+    --red-muted: color-mix(in srgb, var(--red-main), white 80%);
+
+    --green-main: #3bab25;
+    --green-muted: color-mix(in srgb, var(--green-main), white 80%);
+
+    --radius-regular: 16px;
+    --radius-small: 8px;
+
+    --text-size-xl: 1.875rem;
+    --text-size-large: 1.5rem;
+    --text-size-medium: 1.25rem;
+    --text-size-regular: 1rem;
+    --text-size-small: 0.875rem;
+    --text-size-xs: 0.75rem;
+
+    --spacing-xs: 0.25rem; 
+    --spacing-small: 0.5rem; 
+    --spacing-regular: 1rem; 
+    --spacing-medium: 1.5rem; 
+    --spacing-large: 2rem; 
+    --spacing-xl: 3rem; 
+    --spacing-2xl: 4rem;
+}
+
+/* ====================
+Typography
+==================== */
+
+body {
+    font-family: "Inter", sans-serif;
+    color: var(--text-main);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ====================
+Body
+==================== */
+
+body {
+    background-color: var(--bg-color);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ====================
+Header
+==================== */
+
+header {
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--card-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 10;
+}
+
+header h1 {
+    font-size: var(--text-size-large);
+    font-weight: 600;
+}
+
+.back-button {
+    position: absolute;
+    right: var(--spacing-regular);
+    padding: var(--spacing-small) var(--spacing-regular);
+    background-color: var(--red-muted);
+    border-radius: var(--radius-small);
+
+    font-size: var(--text-size-small);
+    font-weight: 600;
+    color: var(--red-main);
+}
+
+.reset-button:active {
+    transform: scale(0.95);
+}
+
+/* ====================
+Main
+==================== */
+
+main {
+    flex-grow: 1;
+    padding: var(--spacing-large);
+    overflow-y: auto;
+}
+
+/* Main: index.html
+-------------------- */
+
+.page_index main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+}
+
+.page_index main > a {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--card-color);
+    border-radius: var(--radius-regular);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.page_index main > a:nth-child(2) {
+    background-color: var(--accent-main);
+}
+
+.page_index main > a .title {
+    font-size: var(--text-size-xl);
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.page_index main > a .sub {
+    font-size: var(--text-size-regular);
+    color: var(--text-muted);
+    margin-top: var(--spacing-small);
+    text-align: center;
+}
+
+.page_index main > a:nth-child(2) .title {
+    color: var(--card-color);
+}
+
+.page_index main > a:nth-child(2) .sub {
+    color: var(--accent-muted);
+}
+
+.page_index main > a:active {
+    border: 2px solid var(--accent-main);
+    transform: scale(0.98);
+}
+
+/* Main: products.html
+-------------------- */
+
+.page_products main {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-medium);
+    align-content: start;
+}
+
+.product_item {
+    background-color: var(--card-color);
+    border-radius: var(--radius-regular);
+    padding: var(--spacing-medium);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.product_item img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: var(--spacing-regular);
+}
+
+.product_item .title {
+    font-size: var(--text-size-medium);
+    font-weight: 600;
+    margin-bottom: var(--spacing-small);
+}
+
+.product_item .price {
+    color: var(--accent-main);
+    font-weight: 700;
+    font-size: var(--text-size-regular);
+}
+
+.product_item:active {
+    transform: scale(0.95);
+    border: 2px solid var(--accent-main);
+}
+
+/* Main: checkout.html
+-------------------- */
+
+.page_checkout main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-card {
+    background-color: var(--card-color);
+    padding: var(--spacing-large);
+    border-radius: var(--radius-regular);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 100%;
+}
+
+.checkout-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--spacing-regular);
+    margin-bottom: var(--spacing-medium);
+    border-bottom: 2px dashed #e5e7eb;
+}
+
+.checkout-card .title {
+    font-size: var(--text-size-medium);
+    font-weight: 600;
+    margin-bottom: var(--spacing-small);
+}
+
+.checkout-card .price {
+    color: var(--accent-main);
+    font-weight: 700;
+    font-size: var(--text-size-regular);
+}
+
+.checkout-card .product-img {
+    height: 75px;
+}
+
+.checkout-card .product-qrcode {
+    width: 220px;
+    display: block;
+    margin: 0 auto;
+    border-radius: var(--radius-small);
+}
+
+.checkout-card .twint-logo {
+    width: 100px;
+    display: block;
+    margin: 0 auto;
+    border-radius: var(--radius-small);
+}
+
+.checkout-restart {
+    padding: var(--spacing-small) var(--spacing-regular);
+    margin-top: var(--spacing-regular);
+    background-color: var(--green-muted);
+    border-radius: var(--radius-small);
+    font-size: var(--text-size-small);
+    font-weight: 600;
+    color: var(--green-main);
+}
+
+.checkout-restart:active {
+    transform: scale(0.95);
+}
+
+/* Main: ai.html
+-------------------- */
+
+.page_ai main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-large);
+    padding: var(--spacing-large) var(--spacing-xl);
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.personality-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--spacing-small);
+    color: var(--text-muted);
+    font-size: var(--text-size-small);
+    font-weight: 600;
+}
+
+.personality-bar select {
+    padding: var(--spacing-xs) var(--spacing-small);
+    border-radius: var(--radius-small);
+    border: 1px solid var(--text-muted);
+    background-color: var(--card-color);
+    font-size: var(--text-size-small);
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--text-main);
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.chat-box {
+    background-color: var(--accent-muted);
+    border: 2px solid var(--accent-main);
+    border-radius: var(--radius-regular);
+    padding: var(--spacing-large);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    min-height: 150px;
+}
+
+.msg-ai > strong {
+    color: var(--accent-main);
+    display: block;
+    margin-bottom: var(--spacing-regular);
+    font-size: var(--text-size-xl);
+}
+
+.chat-box p {
+    font-size: var(--text-size-medium);
+    line-height: 1.4;
+    color: var(--text-main);
+}
+
+.msg-user > strong {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-regular);
+    margin-top: auto;
+}
+
+.option-btn {
+    background-color: var(--card-color);
+    border: 2px solid var(--text-muted);
+    border-radius: var(--radius-regular);
+    padding: var(--spacing-medium) var(--spacing-large);
+    font-size: var(--text-size-medium);
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--text-main);
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    transition: all 0.1s ease;
+}
+
+.answer-btn:active {
+    transform: scale(0.98);
+    border-color: var(--accent-main);
+    background-color: var(--bg-color);
+}
+
+/* ====================
+Footer
+==================== */
+
+footer {
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: var(--text-size-xs);
+    font-weight: 300;
+    color: var(--text-muted);
+}

@@ -4,25 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI | DI KIOSK</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
+<body class="page_ai">
     <header>
-        <h1>Choose a product</h1>
+        <h1>AI Helper</h1>
         <a class="back-button" href="index.html">Back</a>
     </header>
     <main>
+        <div class="personality-bar">
+            <label for="ai-persona">Personality:</label>
+            <select id="ai-persona">
+                <option value="helpful, polite and professional Salesman">Standard Professional</option>
+                <option value="a grumpy, sarcastic old man who complains about modern technology">Grumpy Old Man</option>
+                <option value="an overly enthusiastic surfer dude who uses lots of slang">Surfer Dude</option>
+                <option value="speaking strictly in medieval Shakespearean English">Shakespearean</option>
+            </select>
+        </div>
+
         <div id="chat-box"></div>
         <div id="options-area"></div>
         
         <hr>
         
         <button onclick="resetSession()">Reset Session</button>
-        <select id="personality-select">
-            <option value="helpful, polite and professional Salesman">Standard Professional</option>
-            <option value="a grumpy, sarcastic old man who complains about modern technology">Grumpy Old Man</option>
-            <option value="an overly enthusiastic surfer dude who uses lots of slang">Surfer Dude</option>
-            <option value="speaking strictly in medieval Shakespearean English">Shakespearean</option>
-        </select>
+
     </main>
 
     <footer>

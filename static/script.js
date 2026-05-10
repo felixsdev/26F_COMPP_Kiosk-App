@@ -5,7 +5,7 @@ async function sendMessage(text) {
     // clear the options to prevent doubleclicks
     document.getElementById("options-area").innerHTML = "";
     // get personality
-    const personality = document.getElementById("personality-select").value;
+    const personality = document.getElementById("ai-persona").value;
     // append the clicked option to the chat except when its the start button
     if (text !== "Start") {
         appendMessage("You", text, "user");
