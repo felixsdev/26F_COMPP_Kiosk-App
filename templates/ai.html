@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI | DI KIOSK</title>
+</head>
+<body>
+    <header>
+        <h1>Choose a product</h1>
+        <a class="back-button" href="index.html">Back</a>
+    </header>
+    <main>
+        <div id="chat-box"></div>
+        <div id="options-area"></div>
+        
+        <hr>
+        
+        <button onclick="resetSession()">Reset Session</button>
+        <select id="personality-select">
+            <option value="helpful, polite and professional Salesman">Standard Professional</option>
+            <option value="a grumpy, sarcastic old man who complains about modern technology">Grumpy Old Man</option>
+            <option value="an overly enthusiastic surfer dude who uses lots of slang">Surfer Dude</option>
+            <option value="speaking strictly in medieval Shakespearean English">Shakespearean</option>
+        </select>
+    </main>
+
+    <footer>
+        <p>Made for FS26.COMPP</p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

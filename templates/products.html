@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | DI Kiosk</title>
+</head>
+<body class="page_products">
+    <header>
+        <h1>Choose a product</h1>
+        <a class="back-button" href="index.html">Back</a>
+    </header>
+
+    <main>
+        {% for item in products %}
+        
+        <a class="product_item" href="/checkout.html?item_id={{ item.id }}">
+            <img src="/static/assets/img/img_{{ item.id }}.jpg" alt="{{ item.name }}">
+            <p class="title">{{ item.name }}</p>
+            <p class="price">CHF {{ item.price }}</p>
+        </a>
+        
+        {% endfor %}
+    </main>
+
+    <footer>
+        <p>Made for FS26.COMPP</p>
+    </footer>
+</body>
+</html>

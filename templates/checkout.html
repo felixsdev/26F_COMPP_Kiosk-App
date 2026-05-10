@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | DI Kiosk</title>
+</head>
+<body class="page_checkout">
+    <header>
+        <h1>Checkout</h1>
+        <a class="back-button" href="/products.html">Back</a>
+    </header>
+
+    <main>
+        <div class="checkout-card">
+            <div class="checkout-details">
+                <img class="product-img" src="/static/assets/img/img_{{ product.id }}.jpg" alt="{{ product.name }}">
+                <div>
+                    <p class="title">{{ product.name }}</p>
+                    <p class="price">CHF {{ product.price }}</p>
+                </div>
+            </div>
+            
+            <img class="twint-logo" src="/static/assets/twint.png" alt="Twint Logo">
+            
+            <img class="product-qrcode" src="/static/assets/qr/qr_{{ product.id }}.png" alt="Twint QR Code for {{ product.name }}">
+            
+        </div>
+    </main>
+
+    <footer>
+        <p>Made for FS26.COMPP</p>
+    </footer>
+</body>
+</html>

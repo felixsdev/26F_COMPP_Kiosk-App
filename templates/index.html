@@ -2,22 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DI KIOSK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | DI Kiosk</title>
 </head>
-<body>
-    <div id="chat-box"></div>
-    <div id="options-area"></div>
-    
-    <hr>
-    
-    <button onclick="resetSession()">Reset Session</button>
-    <select id="personality-select">
-        <option value="helpful, polite and professional Salesman">Standard Professional</option>
-        <option value="a grumpy, sarcastic old man who complains about modern technology">Grumpy Old Man</option>
-        <option value="an overly enthusiastic surfer dude who uses lots of slang">Surfer Dude</option>
-        <option value="speaking strictly in medieval Shakespearean English">Shakespearean</option>
-    </select>
+<body class="page_index">
+    <header>
+        <h1>DI Kiosk</h1>
+    </header>
 
-    <script src="/static/script.js"></script>
+    <main>
+        <a href="products.html">
+            <p class="title">To Products</p>
+            <p class="sub">Browse the menu directly</p>
+        </a>
+        <a href="ai.html">
+            <p class="title">AI Helper</p>
+            <p class="sub">Answer a few questions and<br>let the kiosk decide for you</p>
+        </a>
+    </main>
+
+    <footer>
+        <p>Made for FS26.COMPP</p>
+    </footer>
 </body>
 </html>

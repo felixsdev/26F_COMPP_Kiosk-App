@@ -35,11 +35,43 @@ def update_context_loop():
         time.sleep(60)
 
 #===================
-# HOMEPAGE ROUTE
+# UI ROUTES
 
+# home
 @app.route("/")
+@app.route("/index.html")
 def index():
     return flask.render_template("index.html")
+
+# ai
+@app.route("/ai.html")
+def ai():
+    return flask.render_template("ai.html")
+
+# products
+@app.route("/products.html")
+def products():
+    with open('data/products.json', 'r') as file:
+        inventory = json.load(file)
+    return flask.render_template('products.html', products=inventory)
+
+# checkout
+@app.route("/checkout.html")
+def checkout():
+    clicked_id = flask.request.args.get('item_id')
+    with open('data/products.json', 'r') as file:
+        inventory = json.load(file)
+        
+    selected_product = None
+    for item in inventory:
+        if item['id'] == clicked_id:
+            selected_product = item
+            break
+            
+    if not selected_product:
+        return flask.render_template('products.html', products=inventory)
+
+    return flask.render_template('checkout.html', product=selected_product)
 
 #===================
 # RESET SESSION ROUTE
