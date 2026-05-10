@@ -6,10 +6,11 @@ async function sendMessage(text) {
     document.getElementById("options-area").innerHTML = "";
     // get personality
     const personality = document.getElementById("personality-select").value;
-    // append the clicked option to the chat except for the start button
+    // append the clicked option to the chat except when its the start button
     if (text !== "Start") {
         appendMessage("You", text, "user");
     }
+    // 
     try {
         const response = await fetch("/chat", {
             method: "POST",
@@ -21,7 +22,7 @@ async function sendMessage(text) {
         });
         // get response & check if result or question
         const data = await response.json();
-        if (data.product_id !== null && data.product_name !== null) {
+        if (data.product_id && data.product_name) {
             appendMessage("AI", `Perfect! Based on your answers, I recommend: <strong>${data.product_name}</strong>`, "ai");
         } else {
             appendMessage("AI", data.message, "ai");

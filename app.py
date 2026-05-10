@@ -84,44 +84,76 @@ def chat():
 
         # instructions based on current step
         if user_answers_count == 1:
-            step_instructions = """STEP 1: The user just clicked start. Ask the FIRST quirky/lifestyle question. 
-            Provide exactly 3 short options. Leave product fields as null."""
+            step_instructions = f"""
+            You are a smart, efficient kiosk assistant helping people choose a product. 
+            The interaction is in Step 1/4: The user just clicked start. Ask the first quirky/lifestyle question.
+            Your Personality: {personality}.
+            
+            STRICT RULES:
+            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
+            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
+            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
+            4. Your JSON must exactly match this schema:
+            {{
+                "message": "Your short question",
+                "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
+            }}
+            """
         
         elif user_answers_count == 2:
-            step_instructions = """STEP 2: Ask the SECOND quirky/lifestyle question based on their previous answer. 
-            Provide exactly 3 short options. Leave product fields as null."""
+            step_instructions = f"""
+            You are a smart, efficient kiosk assistant helping people choose a product. 
+            The interaction is in Step 2/4: Ask the SECOND quirky/lifestyle question based on their previous answer. 
+            Your Personality: {personality}.
+            
+            STRICT RULES:
+            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
+            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
+            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
+            4. Your JSON must exactly match this schema:
+            {{
+                "message": "Your short question",
+                "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
+            }}
+            """
         
         elif user_answers_count == 3:
-            step_instructions = """STEP 3: Ask the THIRD and final quirky/lifestyle question. 
-            Provide exactly 3 short options. Leave product fields as null."""
+            step_instructions = f"""
+            You are a smart, efficient kiosk assistant helping people choose a product. 
+            The interaction is in Step 3/4: Ask the THIRD and final quirky/lifestyle question. 
+            Your Personality: {personality}.
+            
+            STRICT RULES:
+            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
+            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
+            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
+            4. Your JSON must exactly match this schema:
+            {{
+                "message": "Your short question",
+                "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
+            }}
+            """
         
         else:
-            step_instructions = """STEP 4 (RESULT MODE): The questions are done! 
-            Provide ONLY the product_name and product_id from the available products list based on their answers. 
-            Set "message" to an empty string "" and "options" to an empty array []."""
+            step_instructions = f"""
+            You are a smart, efficient kiosk assistant helping people choose a product. 
+            The interaction is in Step 4/4: Result mode. The questions are done. Provide the product_name and product_id from the available products.json list based on their answers. 
+            Your Personality: {personality}.
 
-        # build the prompt
-        system_instructions = f"""
-        You are a smart, efficient kiosk assistant helping people choose a product. 
-        YOUR PERSONALITY: {personality}.
-        YOUR MISSION: {step_instructions}
+            STRICT RULES:
+            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
+            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
+            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
+            4. Your JSON must exactly match this schema:            
+            {{
+                "product_name": "The final product name (leave as null if in Steps 1-3)",
+                "product_id": "The final product ID (leave as null if in Steps 1-3)"
+            }}
+            """
 
-        STRICT RULES:
-        1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
-        2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
-
-        CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
-        Your JSON must exactly match this schema:
-        {{
-            "message": "Your short question",
-            "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
-            "product_name": "The final product name (leave as null if in Steps 1-3)",
-            "product_id": "The final product ID (leave as null if in Steps 1-3)"
-        }}
-        """
-        
+        # build the prompt        
         system_data = {
-            "instructions": system_instructions,
+            "instructions": step_instructions,
             "session chat": session,
             "context": context,
             "sessions history": history,
