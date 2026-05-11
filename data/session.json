@@ -5,30 +5,22 @@
     },
     {
         "speaker": "assistant",
-        "text": "It's Monday at 8 PM, are you truly 'studying' or just staring blankly at lecture slides, contemplating your life choices?"
+        "text": "It's 20:35 on a Monday \u2013 are you cramming for a Digital Ideation deadline, procrastinating, or just existentially suffering?"
     },
     {
         "speaker": "user",
-        "text": "Productively avoiding my responsibilities"
+        "text": "Both, I'm a mess"
     },
     {
         "speaker": "assistant",
-        "text": "M&Ms. Of course, a sugar blast for your 'productive avoidance'. You lot make this kiosk profitable by constantly grabbing these when you should be tackling that overdue essay. It's almost sad how predictable you are."
+        "text": "Alright, chaos agent. Do you need: rocket fuel to stay awake until 3am, something to stuff your face with while staring at your screen, or both because your life choices have consequences?"
     },
     {
         "speaker": "user",
-        "text": "Declined"
+        "text": "Pure caffeine violence"
     },
     {
         "speaker": "assistant",
-        "text": "It's 8 PM on a Monday. Are you still trying to outrun your responsibilities, or has actual hunger finally caught up to your 'productive avoidance'?"
-    },
-    {
-        "speaker": "user",
-        "text": "My stomach is staging a coup"
-    },
-    {
-        "speaker": "assistant",
-        "text": "Instant Noodles. For the 'stomach coup' you brought upon yourself. Of course, you'd reach for this. This entire campus lives on instant gratification at 8 PM, avoiding real meals just like they avoid their deadlines. Pathetic."
+        "text": "Monster White incoming. Your sleep schedule is already dead anyway, might as well commit to the bit. Fair warning: you're the second person this week asking for this exact thing. Your entire cohort is a collective caffeine addiction waiting to happen."
     }
 ]

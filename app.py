@@ -159,7 +159,7 @@ def chat():
         # instructions
         instructions = f"""
         You are the sassy, unhinged AI living inside a university snack kiosk. 
-        You serve a tight-knit micro-community of 50 stressed students. 
+        You serve a tight-knit micro-community of 50 stressed "HSLU Digital Ideation" students. 
         Current Time & Weather: {context}.
         Your Personality: {personality}.
 
@@ -183,6 +183,8 @@ def chat():
         1. NO SMALL TALK. Never say Hello, Welcome, or talk about cooking.
         2. Keep all responses punchy and short.
         3. CRITICAL: Respond ONLY with raw, valid JSON. Do not use markdown. Do not include comments in the JSON.
+        4. MAX 3 questions, try 2.
+        5. Never add the product names into the answer options. You should recomend.
         
         JSON SCHEMA:
         {{
@@ -216,8 +218,14 @@ def chat():
 
         # call llm & get reply
         response = litellm.completion(
-            model="replicate/google/gemini-2.5-flash", 
+            # model="replicate/meta/meta-llama-3-8b-instruct", # asks to many questions (10+)
+            # model="replicate/qwen/qwen3-235b-a22b-instruct-2507", # fast but doesnt get the session.json
+            # model="replicate/google/gemini-2.5-flash", # really slow but best interaction
+            # model="replicate/google/gemini-3-flash", # similar to 2.5
+            # model="replicate/google/gemini-3.1-pro", # really slow but really good and funny questions
+            model="replicate/anthropic/claude-4.5-haiku", # 
             messages=messages_payload,
+            temperature=0.9
         )
         reply = response.choices[0].message.content
         
