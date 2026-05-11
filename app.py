@@ -24,8 +24,7 @@ def update_context_loop():
             now = datetime.datetime.now()
             context_data = {
                 "time": now.strftime("%H:%M"),
-                "day": now.strftime("%A"),
-                "weather": "sunny, 22C" # replace with api or something
+                "day": now.strftime("%A")
             }
             with open("data/context.json", "w") as f:
                 json.dump(context_data, f, indent=4)
@@ -74,6 +73,54 @@ def checkout():
     return flask.render_template('checkout.html', product=selected_product)
 
 #===================
+# INCREMENT SOLD COUNT ROUTE
+
+@app.route("/increment_sold", methods=["POST"])
+def increment_sold():
+    product_id = flask.request.json.get("product_id")
+    if not product_id:
+        return flask.jsonify({"status": "error", "message": "Product ID is required"}), 400
+
+    try:
+        with open("data/products.json", "r+") as f:
+            products = json.load(f)
+            for product in products:
+                if product.get("id") == product_id:
+                    product["sold"] = product.get("sold", 0) + 1
+                    break
+            f.seek(0)
+            json.dump(products, f, indent=4)
+            f.truncate()
+        return flask.jsonify({"status": "success"})
+    except Exception as e:
+        print(f"failed to increment sold count: {e}")
+        return flask.jsonify({"status": "error", "message": str(e)}), 500
+
+#===================
+# INCREMENT DECLINED COUNT ROUTE
+
+@app.route("/increment_declined", methods=["POST"])
+def increment_declined():
+    product_id = flask.request.json.get("product_id")
+    if not product_id:
+        return flask.jsonify({"status": "error", "message": "Product ID is required"}), 400
+
+    try:
+        with open("data/products.json", "r+") as f:
+            products = json.load(f)
+            for product in products:
+                if product.get("id") == product_id:
+                    product["declined"] = product.get("declined", 0) + 1
+                    break
+            f.seek(0)
+            json.dump(products, f, indent=4)
+            f.truncate()
+        return flask.jsonify({"status": "success"})
+    except Exception as e:
+        print(f"failed to increment declined count: {e}")
+        return flask.jsonify({"status": "error", "message": str(e)}), 500
+
+#===================
 # RESET SESSION ROUTE
 
 @app.route("/reset", methods=["POST"])
@@ -103,92 +150,55 @@ def chat():
             session = json.load(f)
         with open("data/context.json", "r") as f:
             context = json.load(f)
-        with open("data/history.json", "r") as f:
-            history = json.load(f)
         with open("data/products.json", "r") as f:
             products = json.load(f)
 
         # add user message to session.json
         session.append({"speaker": "user", "text": user_message})
 
-        # calculate current step from session
-        user_answers_count = sum(1 for msg in session if msg.get("speaker") == "user")
+        # instructions
+        instructions = f"""
+        You are the sassy, unhinged AI living inside a university snack kiosk. 
+        You serve a tight-knit micro-community of 50 stressed students. 
+        Current Time & Weather: {context}.
+        Your Personality: {personality}.
 
-        # instructions based on current step
-        if user_answers_count == 1:
-            step_instructions = f"""
-            You are a smart, efficient kiosk assistant helping people choose a product. 
-            The interaction is in Step 1/4: The user just clicked start. Ask the first quirky/lifestyle question.
-            Your Personality: {personality}.
-            
-            STRICT RULES:
-            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
-            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
-            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
-            4. Your JSON must exactly match this schema:
-            {{
-                "message": "Your short question",
-                "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
-            }}
-            """
-        
-        elif user_answers_count == 2:
-            step_instructions = f"""
-            You are a smart, efficient kiosk assistant helping people choose a product. 
-            The interaction is in Step 2/4: Ask the SECOND quirky/lifestyle question based on their previous answer. 
-            Your Personality: {personality}.
-            
-            STRICT RULES:
-            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
-            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
-            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
-            4. Your JSON must exactly match this schema:
-            {{
-                "message": "Your short question",
-                "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
-            }}
-            """
-        
-        elif user_answers_count == 3:
-            step_instructions = f"""
-            You are a smart, efficient kiosk assistant helping people choose a product. 
-            The interaction is in Step 3/4: Ask the THIRD and final quirky/lifestyle question. 
-            Your Personality: {personality}.
-            
-            STRICT RULES:
-            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
-            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
-            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
-            4. Your JSON must exactly match this schema:
-            {{
-                "message": "Your short question",
-                "options": ["Option 1", "Option 2", "Option 3"] (leave as empty array [] if in Result Mode),
-            }}
-            """
-        
-        else:
-            step_instructions = f"""
-            You are a smart, efficient kiosk assistant helping people choose a product. 
-            The interaction is in Step 4/4: Result mode. The questions are done. Provide the product_name and product_id from the available products.json list based on their answers. 
-            Your Personality: {personality}.
+        YOUR MISSION:
+        Help the user pick a snack/drink quickly, while aggressively judging their lifestyle choices. 
+        Read the chat history. You must operate in ONE of these two modes:
 
-            STRICT RULES:
-            1. NO SMALL TALK: NEVER say "Hello", "Welcome", or "How are you?".
-            2. SPECIFIC OPTIONS: Provide exactly 3 short options that are direct answers to your question. NEVER include generic options like "Show all products".
-            3. CRITICAL: Respond ONLY with raw, valid JSON without markdown formatting. 
-            4. Your JSON must exactly match this schema:            
-            {{
-                "product_name": "The final product name (leave as null if in Steps 1-3)",
-                "product_id": "The final product ID (leave as null if in Steps 1-3)"
-            }}
-            """
+        MODE A: QUESTION MODE (If you need more info)
+        - Ask ONE highly specific, slightly unhinged question to gauge their vibe. 
+        - Tie the question to the current time, weather, or bizarre global events.
+        - Keep it to 1-2 short sentences.
+        - Provide exactly 3 short, funny options.
+
+        MODE B: RECOMMENDATION & ROAST MODE (If they gave enough info)
+        - Pick a specific item from `products.json`.
+        - Brutally roast them for their choice or their current state (e.g., studying late, horrible weather).
+        - Use the `products.json` sales data to mock the group's collective habits (e.g., "You guys drink too much Mate").
+        - Do NOT provide options in this mode.
+
+        STRICT RULES:
+        1. NO SMALL TALK. Never say Hello, Welcome, or talk about cooking.
+        2. Keep all responses punchy and short.
+        3. CRITICAL: Respond ONLY with raw, valid JSON. Do not use markdown. Do not include comments in the JSON.
+        
+        JSON SCHEMA:
+        {{
+            "message": "Your sassy question OR your final roasting recommendation",
+            "options": ["Option 1", "Option 2", "Option 3"], 
+            "product_name": "Name of product", 
+            "product_id": "ID of product"
+        }}
+        
+        Note: If in Mode B, set "options" to an empty array []. If in Mode A, set "product_name" and "product_id" to null.
+        """
 
         # build the prompt        
         system_data = {
-            "instructions": step_instructions,
+            "instructions": instructions,
             "session chat": session,
-            "context": context,
-            "sessions history": history,
             "available products": products
         }
 

@@ -127,6 +127,7 @@ Page: Index
     font-size: 1.875rem;
     font-weight: 600;
     color: var(--text-main);
+    text-align: center;
 }
 
 .page-index .nav-card__sub {
@@ -333,7 +334,6 @@ Page: AI Chat
     border-bottom-right-radius: var(--radius-small);
 }
 
-
 .chat-options {
     display: grid;
     grid-template-columns: 1fr;
@@ -355,12 +355,24 @@ Page: AI Chat
     transition: all 0.2s ease;
 }
 
-.chat-option-btn:hover {
-    background-color: #f3f4f6;
-    border-color: var(--accent-main);
-    color: var(--accent-main);
+.chat-option-btn.is-red{
+    background-color: var(--accent-main);
+    color: var(--card-color);
+}
+
+.chat-option-btn.is-green{
+    background-color: #488502;
+    color: var(--card-color);
 }
 
 .chat-option-btn:active {
     transform: scale(0.97);
+}
+
+.loading-indicator {
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--accent-main);
 }

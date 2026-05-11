@@ -10,4 +10,4 @@ Before running the application, please complete the following steps:
 2. Inside the `data` folder, create the following three files:
    - `session.json` (Initialize with `[]`)
    - `context.json` (Initialize with `{}`)
-   - `history.json` (Initialize with `[]`)
+   - `products.json` (feed with products)

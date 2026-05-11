@@ -2,12 +2,14 @@
 // SEND MESSAGE (triggered by buttons)
 
 async function sendMessage(text) {
-    // clear the options to prevent doubleclicks
-    document.getElementById("options-area").innerHTML = "";
+    // clear the options to prevent doubleclicks and show loading
+    const optionsArea = document.getElementById("options-area");
+    optionsArea.innerHTML = `<div class="loading-indicator">thinking...</div>`;
+
     // get personality
     const personality = document.getElementById("ai-persona").value;
-    // append the clicked option to the chat except when its the start button
-    if (text !== "Start") {
+    // append the clicked option to the chat except when its the start
+    if (text !== "start") {
         appendMessage("You", text, "user");
     }
     // 
@@ -23,10 +25,11 @@ async function sendMessage(text) {
         // get response & check if result or question
         const data = await response.json();
         if (data.product_id && data.product_name) {
-            appendMessage("AI", `Perfect! Based on your answers, I recommend: <strong>${data.product_name}</strong>`, "ai");
+            appendMessage("AI", `<strong>${data.product_name}</strong><br>${data.message} `, "ai");
             const optionsArea = document.getElementById("options-area");
             optionsArea.innerHTML = `
-                <button class="chat-option-btn" onclick="window.location.href='/checkout.html?item_id=${data.product_id}'">Checkout</button>
+                <button class="chat-option-btn is-green" onclick="checkout('${data.product_id}')">Perfect!</button>
+                <button class="chat-option-btn is-red" onclick="declineProduct('${data.product_id}')">I need something else...</button>
             `;
         } else {
             appendMessage("AI", data.message, "ai");
@@ -47,16 +50,47 @@ async function resetSession() {
             method: 'POST',
         });
         const data = await response.json();
-        // render the start button
+        // start chat automatically
         if (data.status === "success") {
             document.getElementById("chat-box").innerHTML = "";
-            document.getElementById("options-area").innerHTML = `
-                <button class="chat-option-btn" onclick="sendMessage('Start')">Start Session</button>
-            `;
+            document.getElementById("options-area").innerHTML = "";
+            sendMessage('start');
         }
     } catch (error) {
         console.error("failed to reset", error);
     }
+}
+
+// ====================
+// CHECKOUT
+
+async function checkout(productId) {
+    try {
+        await fetch('/increment_sold', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ product_id: productId })
+        });
+    } catch (error) {
+        console.error("Failed to increment sold count", error);
+    }
+    window.location.href = `/checkout.html?item_id=${productId}`;
+}
+
+// ====================
+// DECLINE PRODUCT
+
+async function declineProduct(productId) {
+    try {
+        await fetch('/increment_declined', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ product_id: productId })
+        });
+    } catch (error) {
+        console.error("Failed to increment declined count", error);
+    }
+    sendMessage('Declined');
 }
 
 // ====================
@@ -73,6 +107,7 @@ function renderOptions(optionsArray) {
         btn.onclick = () => sendMessage(optText);
         optionsArea.appendChild(btn);
     });
+    scrollToBottom();
 }
 
 // ====================
@@ -84,5 +119,13 @@ function appendMessage(senderName, message, cssClass) {
     div.className = `chat-message chat-message--${cssClass}`;
     div.innerHTML = `<strong>${senderName}:</strong> ${message}`;
     box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
+    scrollToBottom();
+}
+
+// ====================
+// SCROLL TO BOTTOM
+
+function scrollToBottom() {
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
