@@ -2,6 +2,8 @@
 
 A Flask-based AI kiosk app for HSLU Digital Ideation students to pick snacks via a sassy AI chatbot. The AI asks a few questions, roasts your life choices, and recommends a product from the inventory.
 
+[Build log / wiki](wiki.md)
+
 ## Features
 
 - AI chat with selectable personalities, powered by LiteLLM via Replicate
