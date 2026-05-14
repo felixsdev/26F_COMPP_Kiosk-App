@@ -5,23 +5,23 @@
         "price": "1.60",
         "type": "Caffeine, Sweet, Cold",
         "sold": 0,
-        "declined": 1
+        "declined": 0
     },
     {
         "id": "monster",
         "name": "Monster White",
         "price": "1.70",
         "type": "Caffeine, Sweet, Cold",
-        "sold": 2,
-        "declined": 1
+        "sold": 0,
+        "declined": 0
     },
     {
         "id": "m-und-ms",
         "name": "M&Ms",
         "price": "1.00",
         "type": "Snack, Sweet, Chocolate",
-        "sold": 1,
-        "declined": 1
+        "sold": 0,
+        "declined": 0
     },
     {
         "id": "noodles",
@@ -29,7 +29,7 @@
         "price": "2.20",
         "type": "Food, Savory, Hot",
         "sold": 0,
-        "declined": 1
+        "declined": 0
     },
     {
         "id": "pingui",
@@ -44,15 +44,15 @@
         "name": "Knoppers",
         "price": "0.90",
         "type": "Snack, Sweet, Chocolate",
-        "sold": 1,
-        "declined": 1
+        "sold": 0,
+        "declined": 0
     },
     {
         "id": "chips",
         "name": "Chips",
         "price": "1.20",
         "type": "Snack, Savory, Salty",
-        "sold": 1,
+        "sold": 0,
         "declined": 0
     },
     {
