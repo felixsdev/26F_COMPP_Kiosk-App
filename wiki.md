@@ -33,7 +33,7 @@ A personality dropdown was also integrated, letting the user pick the AI's perso
 
 Product images and per-product TWINT QR codes were added to `static/assets/`. The checkout button was wired into the AI flow so that after the AI recommends a product, clicking it navigates directly to that product's checkout page.
 
-**May 11** — The mega prompt was polished significantly. `sold` and `declined` counters were added to each product in `products.json`, with two new backend routes (`/increment_sold`, `/increment_declined`) to update them on user interaction. This gave the AI access to real sales data, which it uses to roast the group's collective habits. `history.json` was removed — it had been unused since `session.json` took over that role.
+**May 11** — The mega prompt was polished significantly. `sold` and `declined` counters were added to each product in `products.json`, with two new backend routes (`/increment_sold`, `/increment_declined`) to update them on user interaction. This gave the AI access to real sales data, which it uses to roast the group's collective habits. `history.json` was removed — it had been unused.
 
 Multiple models were tested via Replicate to find the best balance of speed, quality, and interaction style. Notes on each are left as comments in `app.py`.
 
