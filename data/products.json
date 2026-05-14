@@ -1,0 +1,74 @@
+[
+    {
+        "id": "el-tony",
+        "name": "El Tony Mate",
+        "price": "1.60",
+        "type": "Caffeine, Sweet, Cold",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "monster",
+        "name": "Monster White",
+        "price": "1.70",
+        "type": "Caffeine, Sweet, Cold",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "m-und-ms",
+        "name": "M&Ms",
+        "price": "1.00",
+        "type": "Snack, Sweet, Chocolate",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "noodles",
+        "name": "Instant Noodles",
+        "price": "2.20",
+        "type": "Food, Savory, Hot",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "pingui",
+        "name": "Kinder Pingui",
+        "price": "0.70",
+        "type": "Snack, Sweet, Cold",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "knoppers",
+        "name": "Knoppers",
+        "price": "0.90",
+        "type": "Snack, Sweet, Chocolate",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "chips",
+        "name": "Chips",
+        "price": "1.20",
+        "type": "Snack, Savory, Salty",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "erdnuesse",
+        "name": "Erdn\u00fcsse",
+        "price": "0.80",
+        "type": "Snack, Savory, Salty",
+        "sold": 0,
+        "declined": 0
+    },
+    {
+        "id": "kambly",
+        "name": "Kambly Guetzli",
+        "price": "1.40",
+        "type": "Snack, Sweet, Biscuit",
+        "sold": 0,
+        "declined": 0
+    }
+]
