@@ -15,6 +15,7 @@ Variables
 
 :root {
     --bg-color: #E4E4E4;
+    --bg-subtle: #f9fafb;
     --card-color: #F5F5F5;
 
     --text-main: #111827;
@@ -22,6 +23,10 @@ Variables
 
     --accent-main: #c72127;
     --accent-muted: color-mix(in srgb, var(--accent-main), white 80%);
+    --accent-green: #488502;
+
+    --border-color: #e5e7eb;
+    --border-color-strong: #d1d5db;
 
     --radius-regular: 16px;
     --radius-small: 8px;
@@ -222,7 +227,7 @@ Page: Checkout
     justify-content: space-between;
     align-items: center;
     padding-bottom: 1rem;
-    border-bottom: 2px dashed #e5e7eb;
+    border-bottom: 2px dashed var(--border-color);
 }
 
 .checkout-card__name {
@@ -281,7 +286,7 @@ Page: AI Chat
 .ai-controls select {
     padding: 0.5rem 0.75rem;
     border-radius: var(--radius-small);
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color-strong);
     background-color: var(--card-color);
     font-size: 0.9rem;
     font-family: inherit;
@@ -300,9 +305,9 @@ Page: AI Chat
     flex-direction: column;
     gap: 1.5rem;
     padding: 1.5rem;
-    background-color: #f9fafb;
+    background-color: var(--bg-subtle);
     border-radius: var(--radius-regular);
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color);
     min-height: 300px;
     overflow: scroll;
 }
@@ -330,7 +335,7 @@ Page: AI Chat
     background-color: var(--card-color);
     color: var(--text-main);
     align-self: flex-end;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color);
     border-bottom-right-radius: var(--radius-small);
 }
 
@@ -343,7 +348,7 @@ Page: AI Chat
 
 .chat-option-btn {
     background-color: var(--card-color);
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color-strong);
     border-radius: var(--radius-regular);
     padding: 1.25rem;
     font-size: 1.1rem;
@@ -361,7 +366,7 @@ Page: AI Chat
 }
 
 .chat-option-btn.is-green{
-    background-color: #488502;
+    background-color: var(--accent-green);
     color: var(--card-color);
 }
 
