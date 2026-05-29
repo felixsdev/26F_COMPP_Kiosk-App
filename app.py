@@ -36,25 +36,29 @@ def update_context_loop():
 #===================
 # UI ROUTES
 
-# home
+# HOME
+
 @app.route("/")
 @app.route("/index.html")
 def index():
     return flask.render_template("index.html")
 
-# ai
+# AI
+
 @app.route("/ai.html")
 def ai():
     return flask.render_template("ai.html")
 
-# products
+# PRODUCTS
+
 @app.route("/products.html")
 def products():
     with open('data/products.json', 'r') as file:
         inventory = json.load(file)
     return flask.render_template('products.html', products=inventory)
 
-# checkout
+# CHECKOUT
+
 @app.route("/checkout.html")
 def checkout():
     clicked_id = flask.request.args.get('item_id')
@@ -72,7 +76,6 @@ def checkout():
 
     return flask.render_template('checkout.html', product=selected_product)
 
-#===================
 # INCREMENT SOLD COUNT ROUTE
 
 @app.route("/increment_sold", methods=["POST"])
@@ -96,7 +99,6 @@ def increment_sold():
         print(f"failed to increment sold count: {e}")
         return flask.jsonify({"status": "error", "message": str(e)}), 500
 
-#===================
 # INCREMENT DECLINED COUNT ROUTE
 
 @app.route("/increment_declined", methods=["POST"])
@@ -120,7 +122,6 @@ def increment_declined():
         print(f"failed to increment declined count: {e}")
         return flask.jsonify({"status": "error", "message": str(e)}), 500
 
-#===================
 # RESET SESSION ROUTE
 
 @app.route("/reset", methods=["POST"])
@@ -134,7 +135,6 @@ def reset():
         print(f"failed resetting session: {e}")
         return flask.jsonify({"status": "error"})
 
-#===================
 # CHAT ROUTE
 
 @app.route("/chat", methods=["POST"])
